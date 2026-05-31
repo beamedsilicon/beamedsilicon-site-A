@@ -23,8 +23,6 @@ a{color:inherit;text-decoration:none;}
 header{position:sticky;top:0;z-index:100;background:rgba(10,10,0,0.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
 nav{display:flex;align-items:center;height:62px;}
 .logo{display:flex;align-items:center;gap:10px;margin-right:auto;}
-.logo-icon{width:30px;height:30px;background:var(--yellow-bg);border:1px solid var(--border-yellow);border-radius:4px;display:flex;align-items:center;justify-content:center;}
-.logo-icon svg{width:18px;height:18px;}
 .logo-name{font-family:var(--mono);font-size:14px;font-weight:500;letter-spacing:0.04em;display:flex;}
 .logo-beamed{color:#000000;background:#f5b731;padding:2px 4px;border-radius:2px 0 0 2px;}
 .logo-silicon{color:#f5b731;background:#000000;padding:2px 4px;border-radius:0 2px 2px 0;border:1px solid rgba(245,183,49,0.3);border-left:none;}
