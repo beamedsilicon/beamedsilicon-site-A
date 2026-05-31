@@ -75,7 +75,7 @@ function FlowParticles() {
         alpha: 0,
         life: 0,
         maxLife: 220 + Math.random() * 180,
-        color: Math.random() > 0.3 ? "#ffd700" : "#ffaa00",
+        color: Math.random() > 0.3 ? "#f5b731" : "#ffaa00",
       }
     }
 
@@ -128,7 +128,7 @@ function FlowParticles() {
         const alpha = t < 0.1 ? t / 0.1 : t > 0.8 ? (1 - t) / 0.2 : 1
         ctx!.beginPath()
         ctx!.arc(p.x, p.y, p.size, 0, Math.PI * 2)
-        ctx!.fillStyle = "#ffd700"
+        ctx!.fillStyle = "#f5b731"
         ctx!.globalAlpha = alpha * 0.5
         ctx!.fill()
         ctx!.globalAlpha = 1
@@ -155,194 +155,206 @@ function FlowParticles() {
   return <canvas ref={canvasRef} className="flow-canvas" aria-hidden="true" />
 }
 
-function SiliconChip() {
+function QuartzLaserScene() {
   return (
-    <div className="silicon-scene" aria-label="Animated laser beam hitting a silicon chip">
-      <svg viewBox="0 0 440 440" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <div className="silicon-scene" aria-label="Animated laser beam from robot arm hitting a quartz silicon crystal">
+      <svg viewBox="0 0 480 480" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <radialGradient id="chipGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#ffd700" stopOpacity="0.3" />
-            <stop offset="60%" stopColor="#ffaa00" stopOpacity="0.08" />
-            <stop offset="100%" stopColor="#ffd700" stopOpacity="0" />
+          <radialGradient id="crystalGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#f5b731" stopOpacity="0.4" />
+            <stop offset="60%" stopColor="#f5b731" stopOpacity="0.1" />
+            <stop offset="100%" stopColor="#f5b731" stopOpacity="0" />
           </radialGradient>
           <radialGradient id="impactGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9" />
-            <stop offset="30%" stopColor="#ffd700" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="#ffd700" stopOpacity="0" />
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
+            <stop offset="30%" stopColor="#f5b731" stopOpacity="0.7" />
+            <stop offset="100%" stopColor="#f5b731" stopOpacity="0" />
           </radialGradient>
+          <linearGradient id="laserGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#f5b731" stopOpacity="0.1" />
+            <stop offset="50%" stopColor="#f5b731" stopOpacity="0.8" />
+            <stop offset="90%" stopColor="#ffffff" stopOpacity="1" />
+            <stop offset="100%" stopColor="#f5b731" stopOpacity="0.6" />
+          </linearGradient>
+          <linearGradient id="crystalFace1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#2a2a20" />
+            <stop offset="50%" stopColor="#1a1a10" />
+            <stop offset="100%" stopColor="#0f0f08" />
+          </linearGradient>
+          <linearGradient id="crystalFace2" x1="100%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#3a3a28" />
+            <stop offset="50%" stopColor="#252518" />
+            <stop offset="100%" stopColor="#1a1a10" />
+          </linearGradient>
+          <linearGradient id="crystalFace3" x1="50%" y1="0%" x2="50%" y2="100%">
+            <stop offset="0%" stopColor="#454530" />
+            <stop offset="100%" stopColor="#2a2a1c" />
+          </linearGradient>
+          <linearGradient id="armGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#2a2a20" />
+            <stop offset="50%" stopColor="#1a1a12" />
+            <stop offset="100%" stopColor="#0f0f08" />
+          </linearGradient>
           <filter id="glow">
             <feGaussianBlur stdDeviation="3" result="blur" />
             <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
           <filter id="strongGlow">
-            <feGaussianBlur stdDeviation="6" result="blur" />
+            <feGaussianBlur stdDeviation="8" result="blur" />
             <feMerge><feMergeNode in="blur" /><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
-          <clipPath id="chipClip">
-            <rect x="120" y="120" width="200" height="200" rx="4" />
-          </clipPath>
+          <filter id="crystalGlowFilter">
+            <feGaussianBlur stdDeviation="4" result="blur" />
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
         </defs>
 
-        {/* Ambient glow behind chip */}
-        <circle cx="220" cy="220" r="160" fill="url(#chipGlow)" />
-
-        {/* Grid background */}
-        <g opacity="0.08" stroke="#ffd700" strokeWidth="0.5">
-          {Array.from({ length: 10 }, (_, i) => (
-            <line key={`h${i}`} x1="40" y1={80 + i * 30} x2="400" y2={80 + i * 30} />
+        {/* Background grid */}
+        <g opacity="0.06" stroke="#f5b731" strokeWidth="0.5">
+          {Array.from({ length: 12 }, (_, i) => (
+            <line key={`h${i}`} x1="20" y1={60 + i * 32} x2="460" y2={60 + i * 32} />
           ))}
-          {Array.from({ length: 13 }, (_, i) => (
-            <line key={`v${i}`} x1={40 + i * 30} y1="80" x2={40 + i * 30} y2="360" />
+          {Array.from({ length: 14 }, (_, i) => (
+            <line key={`v${i}`} x1={20 + i * 34} y1="60" x2={20 + i * 34} y2="420" />
           ))}
         </g>
 
-        {/* ── CHIP GROUP (floats) ── */}
-        <g className="chip-group">
-          {/* Chip shadow */}
-          <rect x="124" y="126" width="200" height="200" rx="4" fill="#000" opacity="0.6" />
+        {/* Ambient glow behind crystal */}
+        <circle cx="300" cy="280" r="120" fill="url(#crystalGlow)" className="crystal-ambient" />
 
-          {/* Chip body */}
-          <rect className="chip-body" x="120" y="120" width="200" height="200" rx="4"
-            fill="#1a1800" stroke="#ffd700" strokeWidth="1.5" />
-
-          {/* Inner circuit pattern */}
-          <g clipPath="url(#chipClip)" opacity="0.7">
-            {/* Die area */}
-            <rect x="145" y="145" width="150" height="150" rx="2" fill="#0f0f00" stroke="#ffd700" strokeWidth="0.8" strokeOpacity="0.5" />
-
-            {/* Circuit traces */}
-            <g stroke="#ffd700" strokeWidth="0.6" strokeOpacity="0.4" fill="none">
-              <line x1="145" y1="165" x2="295" y2="165" />
-              <line x1="145" y1="185" x2="295" y2="185" />
-              <line x1="145" y1="220" x2="295" y2="220" />
-              <line x1="145" y1="255" x2="295" y2="255" />
-              <line x1="145" y1="275" x2="295" y2="275" />
-              <line x1="165" y1="145" x2="165" y2="295" />
-              <line x1="185" y1="145" x2="185" y2="295" />
-              <line x1="220" y1="145" x2="220" y2="295" />
-              <line x1="255" y1="145" x2="255" y2="295" />
-              <line x1="275" y1="145" x2="275" y2="295" />
-            </g>
-
-            {/* Logic blocks */}
-            <rect x="152" y="152" width="28" height="20" rx="1" fill="#ffd700" fillOpacity="0.12" stroke="#ffd700" strokeWidth="0.7" strokeOpacity="0.6" />
-            <rect x="190" y="152" width="40" height="28" rx="1" fill="#ffd700" fillOpacity="0.08" stroke="#ffd700" strokeWidth="0.7" strokeOpacity="0.5" />
-            <rect x="242" y="152" width="22" height="22" rx="1" fill="#ffaa00" fillOpacity="0.12" stroke="#ffaa00" strokeWidth="0.7" strokeOpacity="0.6" />
-            <rect x="152" y="192" width="52" height="52" rx="1" fill="#ffd700" fillOpacity="0.06" stroke="#ffd700" strokeWidth="0.8" strokeOpacity="0.4" />
-            <rect x="214" y="192" width="36" height="36" rx="1" fill="#ffd700" fillOpacity="0.08" stroke="#ffd700" strokeWidth="0.7" strokeOpacity="0.5" />
-            <rect x="262" y="200" width="24" height="24" rx="1" fill="#ffaa00" fillOpacity="0.1" stroke="#ffaa00" strokeWidth="0.7" strokeOpacity="0.5" />
-            <rect x="152" y="258" width="32" height="24" rx="1" fill="#ffd700" fillOpacity="0.1" stroke="#ffd700" strokeWidth="0.7" strokeOpacity="0.5" />
-            <rect x="196" y="260" width="50" height="24" rx="1" fill="#ffd700" fillOpacity="0.07" stroke="#ffd700" strokeWidth="0.7" strokeOpacity="0.45" />
-            <rect x="258" y="258" width="28" height="28" rx="1" fill="#ffaa00" fillOpacity="0.08" stroke="#ffaa00" strokeWidth="0.7" strokeOpacity="0.5" />
-
-            {/* Center core */}
-            <rect x="168" y="200" width="36" height="36" rx="2"
-              fill="#ffd700" fillOpacity="0.18" stroke="#ffd700" strokeWidth="1" />
-            <circle cx="186" cy="218" r="8" fill="#ffd700" fillOpacity="0.3" stroke="#ffd700" strokeWidth="0.8" />
+        {/* ── ROBOT ARM ── */}
+        <g className="robot-arm">
+          {/* Base mount */}
+          <rect x="20" y="100" width="40" height="60" rx="4" fill="url(#armGrad)" stroke="#f5b731" strokeWidth="1" strokeOpacity="0.4" />
+          <rect x="25" y="105" width="30" height="8" rx="2" fill="#f5b731" fillOpacity="0.15" />
+          <circle cx="40" cy="130" r="6" fill="#0f0f08" stroke="#f5b731" strokeWidth="1" strokeOpacity="0.5" />
+          
+          {/* Upper arm segment */}
+          <g className="arm-segment-1">
+            <rect x="38" y="85" width="80" height="18" rx="3" fill="url(#armGrad)" stroke="#f5b731" strokeWidth="0.8" strokeOpacity="0.3" />
+            {/* Joint detail */}
+            <circle cx="40" cy="94" r="8" fill="#1a1a12" stroke="#f5b731" strokeWidth="1" strokeOpacity="0.4" />
+            <circle cx="40" cy="94" r="4" fill="#f5b731" fillOpacity="0.3" />
+            {/* Hydraulic detail */}
+            <rect x="55" y="89" width="50" height="3" rx="1" fill="#f5b731" fillOpacity="0.12" />
+            <rect x="55" y="95" width="50" height="3" rx="1" fill="#f5b731" fillOpacity="0.08" />
           </g>
 
-          {/* Chip pins - top */}
-          {Array.from({ length: 8 }, (_, i) => (
-            <rect key={`pt${i}`} x={133 + i * 23} y="106" width="10" height="14" rx="1"
-              fill="#ffd700" fillOpacity="0.5" stroke="#ffd700" strokeWidth="0.6" />
-          ))}
-          {/* Chip pins - bottom */}
-          {Array.from({ length: 8 }, (_, i) => (
-            <rect key={`pb${i}`} x={133 + i * 23} y="320" width="10" height="14" rx="1"
-              fill="#ffd700" fillOpacity="0.5" stroke="#ffd700" strokeWidth="0.6" />
-          ))}
-          {/* Chip pins - left */}
-          {Array.from({ length: 6 }, (_, i) => (
-            <rect key={`pl${i}`} x="106" y={140 + i * 28} width="14" height="10" rx="1"
-              fill="#ffd700" fillOpacity="0.5" stroke="#ffd700" strokeWidth="0.6" />
-          ))}
-          {/* Chip pins - right */}
-          {Array.from({ length: 6 }, (_, i) => (
-            <rect key={`pr${i}`} x="320" y={140 + i * 28} width="14" height="10" rx="1"
-              fill="#ffd700" fillOpacity="0.5" stroke="#ffd700" strokeWidth="0.6" />
-          ))}
+          {/* Elbow joint */}
+          <g className="elbow-joint">
+            <circle cx="118" cy="94" r="12" fill="#1a1a12" stroke="#f5b731" strokeWidth="1" strokeOpacity="0.5" />
+            <circle cx="118" cy="94" r="6" fill="#0f0f08" stroke="#f5b731" strokeWidth="0.8" strokeOpacity="0.4" />
+            <circle cx="118" cy="94" r="3" fill="#f5b731" fillOpacity="0.4" />
+          </g>
 
-          {/* Corner chamfers */}
-          <line x1="120" y1="124" x2="124" y2="120" stroke="#ffd700" strokeWidth="1" opacity="0.7" />
-          <line x1="316" y1="120" x2="320" y2="124" stroke="#ffd700" strokeWidth="1" opacity="0.7" />
-          <line x1="120" y1="316" x2="124" y2="320" stroke="#ffd700" strokeWidth="1" opacity="0.7" />
-          <line x1="316" y1="320" x2="320" y2="316" stroke="#ffd700" strokeWidth="1" opacity="0.7" />
+          {/* Lower arm segment (angled down toward crystal) */}
+          <g className="arm-segment-2">
+            <path d="M118 94 L180 180" stroke="url(#armGrad)" strokeWidth="16" strokeLinecap="round" />
+            <path d="M118 94 L180 180" stroke="#f5b731" strokeWidth="1" strokeOpacity="0.3" strokeLinecap="round" />
+            {/* Details along arm */}
+            <circle cx="140" cy="125" r="4" fill="#f5b731" fillOpacity="0.15" stroke="#f5b731" strokeWidth="0.5" strokeOpacity="0.3" />
+            <circle cx="160" cy="155" r="3" fill="#f5b731" fillOpacity="0.1" stroke="#f5b731" strokeWidth="0.5" strokeOpacity="0.2" />
+          </g>
+
+          {/* Wrist joint */}
+          <g className="wrist-joint">
+            <circle cx="180" cy="180" r="10" fill="#1a1a12" stroke="#f5b731" strokeWidth="1" strokeOpacity="0.5" />
+            <circle cx="180" cy="180" r="5" fill="#f5b731" fillOpacity="0.3" />
+          </g>
+
+          {/* Laser emitter head */}
+          <g className="laser-head">
+            <rect x="170" y="185" width="35" height="22" rx="3" fill="url(#armGrad)" stroke="#f5b731" strokeWidth="1" strokeOpacity="0.5" />
+            {/* Cooling fins */}
+            <rect x="172" y="188" width="2" height="16" fill="#f5b731" fillOpacity="0.15" />
+            <rect x="176" y="188" width="2" height="16" fill="#f5b731" fillOpacity="0.12" />
+            <rect x="180" y="188" width="2" height="16" fill="#f5b731" fillOpacity="0.1" />
+            {/* Laser aperture */}
+            <circle cx="198" cy="196" r="6" fill="#0a0a00" stroke="#f5b731" strokeWidth="1.5" />
+            <circle cx="198" cy="196" r="3" className="laser-led" fill="#f5b731" filter="url(#glow)" />
+            {/* Status LED */}
+            <circle cx="174" cy="203" r="2" className="status-led" fill="#f5b731" />
+          </g>
         </g>
 
-        {/* ── LASER BEAM (horizontal, traveling left-to-right then right-to-left) ── */}
-        {/* Forward beam */}
-        <g filter="url(#strongGlow)">
-          <rect className="laser-rect-fwd"
-            x="-300" y="216" width="280" height="8" rx="4"
-            fill="url(#laserGradFwd)" opacity="1" />
-          <rect className="laser-rect-fwd"
-            x="-300" y="218" width="280" height="4" rx="2"
-            fill="#ffffff" opacity="0.9" />
-        </g>
-        {/* Reverse beam */}
-        <g filter="url(#strongGlow)">
-          <rect className="laser-rect-rev"
-            x="800" y="216" width="280" height="8" rx="4"
-            fill="url(#laserGradRev)" opacity="1" />
-          <rect className="laser-rect-rev"
-            x="800" y="218" width="280" height="4" rx="2"
-            fill="#ffffff" opacity="0.9" />
+        {/* ── LASER BEAM ── */}
+        <g className="laser-beam-group" filter="url(#strongGlow)">
+          <line className="laser-beam" x1="204" y1="196" x2="260" y2="250" 
+            stroke="url(#laserGrad)" strokeWidth="6" strokeLinecap="round" />
+          <line className="laser-beam-core" x1="204" y1="196" x2="260" y2="250" 
+            stroke="#ffffff" strokeWidth="2" strokeLinecap="round" />
         </g>
 
-        <defs>
-          <linearGradient id="laserGradFwd" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#ffd700" stopOpacity="0" />
-            <stop offset="40%" stopColor="#ffd700" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="#ffffff" stopOpacity="1" />
-          </linearGradient>
-          <linearGradient id="laserGradRev" x1="100%" y1="0%" x2="0%" y2="0%">
-            <stop offset="0%" stopColor="#ffd700" stopOpacity="0" />
-            <stop offset="40%" stopColor="#ffd700" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="#ffffff" stopOpacity="1" />
-          </linearGradient>
-        </defs>
+        {/* ── QUARTZ CRYSTAL ── */}
+        <g className="crystal-group">
+          {/* Crystal shadow */}
+          <polygon points="310,380 250,350 270,240 310,200 350,220 370,320 330,370" 
+            fill="#000" opacity="0.5" transform="translate(5, 5)" />
+          
+          {/* Main crystal body - faceted quartz shape */}
+          {/* Back left face */}
+          <polygon className="crystal-face" points="270,320 270,240 310,200 310,280" 
+            fill="url(#crystalFace1)" stroke="#f5b731" strokeWidth="0.8" strokeOpacity="0.4" />
+          {/* Back right face */}
+          <polygon className="crystal-face" points="310,200 350,220 350,300 310,280" 
+            fill="url(#crystalFace2)" stroke="#f5b731" strokeWidth="0.8" strokeOpacity="0.5" />
+          {/* Front right face */}
+          <polygon className="crystal-face" points="350,300 350,220 370,250 370,330" 
+            fill="url(#crystalFace1)" stroke="#f5b731" strokeWidth="0.8" strokeOpacity="0.3" />
+          {/* Front face */}
+          <polygon className="crystal-face" points="310,280 350,300 370,330 330,360 290,340 270,320" 
+            fill="url(#crystalFace3)" stroke="#f5b731" strokeWidth="1" strokeOpacity="0.6" />
+          {/* Top face (where laser hits) */}
+          <polygon className="crystal-top" points="270,240 310,200 350,220 330,250 290,240" 
+            fill="#3a3a28" stroke="#f5b731" strokeWidth="1.2" strokeOpacity="0.7" />
 
-        {/* ── IMPACT FLASH on chip ── */}
-        <g className="impact-ring" filter="url(#strongGlow)">
-          <circle cx="220" cy="220" r="30" fill="url(#impactGlow)" />
-          <circle cx="220" cy="220" r="16" fill="#ffffff" fillOpacity="0.7" />
-        </g>
-        {/* Expanding rings on impact */}
-        <circle className="flow-ring-1" cx="220" cy="220" r="10"
-          stroke="#ffd700" fill="none" />
-        <circle className="flow-ring-2" cx="220" cy="220" r="10"
-          stroke="#ffaa00" fill="none" />
-        <circle className="flow-ring-3" cx="220" cy="220" r="10"
-          stroke="#ffd700" fill="none" opacity="0.6" />
+          {/* Internal crystal structure lines */}
+          <g stroke="#f5b731" strokeWidth="0.5" strokeOpacity="0.2">
+            <line x1="290" y1="250" x2="310" y2="340" />
+            <line x1="330" y1="240" x2="340" y2="330" />
+            <line x1="280" y1="280" x2="350" y2="290" />
+          </g>
 
-        {/* ── SCAN LINE across chip ── */}
-        <rect className="scan-rect"
-          x="120" y="80" width="200" height="2" rx="1"
-          fill="#ffd700" fillOpacity="0.55" filter="url(#glow)" />
+          {/* Crystal inclusions */}
+          <circle cx="300" cy="290" r="4" fill="#f5b731" fillOpacity="0.08" />
+          <circle cx="330" cy="270" r="3" fill="#f5b731" fillOpacity="0.06" />
+          <circle cx="290" cy="310" r="2" fill="#f5b731" fillOpacity="0.1" />
 
-        {/* Corner decorations */}
-        <g stroke="#ffd700" strokeWidth="1" strokeOpacity="0.3" fill="none">
-          <path d="M30 30 L60 30 L60 60" />
-          <path d="M410 30 L380 30 L380 60" />
-          <path d="M30 410 L60 410 L60 380" />
-          <path d="M410 410 L380 410 L380 380" />
-        </g>
-
-        {/* Orbit dots */}
-        <g fill="#ffd700" fillOpacity="0.4">
-          <circle cx="70" cy="220" r="2.5" />
-          <circle cx="370" cy="220" r="2.5" />
-          <circle cx="220" cy="70" r="2.5" />
-          <circle cx="220" cy="370" r="2.5" />
+          {/* Crystal highlight reflections */}
+          <line x1="275" y1="260" x2="285" y2="300" stroke="#ffffff" strokeWidth="1" strokeOpacity="0.15" />
+          <line x1="345" y1="240" x2="355" y2="280" stroke="#ffffff" strokeWidth="0.8" strokeOpacity="0.1" />
         </g>
 
-        {/* Data lines from chip to edge */}
-        <g stroke="#ffd700" strokeWidth="0.6" strokeOpacity="0.2" strokeDasharray="4 6">
-          <line x1="70" y1="220" x2="106" y2="220" />
-          <line x1="334" y1="220" x2="370" y2="220" />
-          <line x1="220" y1="70" x2="220" y2="106" />
-          <line x1="220" y1="334" x2="220" y2="370" />
+        {/* ── IMPACT POINT (on crystal top) ── */}
+        <g className="impact-point">
+          <circle cx="300" cy="230" r="20" fill="url(#impactGlow)" className="impact-glow" />
+          <circle cx="300" cy="230" r="8" fill="#ffffff" fillOpacity="0.8" className="impact-core" />
         </g>
+
+        {/* Energy rings expanding from impact */}
+        <circle className="energy-ring-1" cx="300" cy="230" r="10" stroke="#f5b731" fill="none" />
+        <circle className="energy-ring-2" cx="300" cy="230" r="10" stroke="#f5b731" fill="none" />
+        <circle className="energy-ring-3" cx="300" cy="230" r="10" stroke="#ffaa00" fill="none" />
+
+        {/* Sparks from impact */}
+        <g className="sparks">
+          <circle className="spark-1" cx="300" cy="230" r="2" fill="#f5b731" />
+          <circle className="spark-2" cx="300" cy="230" r="1.5" fill="#ffffff" />
+          <circle className="spark-3" cx="300" cy="230" r="2" fill="#f5b731" />
+          <circle className="spark-4" cx="300" cy="230" r="1.5" fill="#ffaa00" />
+        </g>
+
+        {/* Corner frame decoration */}
+        <g stroke="#f5b731" strokeWidth="1" strokeOpacity="0.2" fill="none">
+          <path d="M20 20 L60 20 L60 50" />
+          <path d="M460 20 L420 20 L420 50" />
+          <path d="M20 460 L60 460 L60 430" />
+          <path d="M460 460 L420 460 L420 430" />
+        </g>
+
+        {/* Platform/base under crystal */}
+        <ellipse cx="310" cy="385" rx="80" ry="15" fill="#0f0f08" stroke="#f5b731" strokeWidth="0.8" strokeOpacity="0.3" />
+        <ellipse cx="310" cy="385" rx="60" ry="10" fill="none" stroke="#f5b731" strokeWidth="0.5" strokeOpacity="0.15" />
       </svg>
     </div>
   )
@@ -386,7 +398,7 @@ export function Hero() {
               </div>
             </div>
           </div>
-          <SiliconChip />
+          <QuartzLaserScene />
         </div>
       </section>
     </>
