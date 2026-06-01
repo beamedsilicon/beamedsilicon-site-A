@@ -12,14 +12,38 @@ export function Newsletter() {
               semiconductor companies.
             </p>
           </div>
-          <div className="nl-form">
-            <input className="f-in" type="text" placeholder="Your name" aria-label="Your name" />
-            <input className="f-in" type="email" placeholder="Work email address" aria-label="Work email address" />
-            <button className="f-btn" type="button">
-              SUBSCRIBE FREE →
-            </button>
-            <p className="f-note">No spam. Unsubscribe anytime. Read by 22,000+ semiconductor professionals.</p>
-          </div>
+          <form
+  className="nl-form"
+  action="https://formspree.io/f/mdajrgwa"
+  method="POST"
+>
+  <input
+    className="f-in"
+    type="text"
+    name="name"
+    placeholder="Your name"
+    required
+  />
+
+  <input
+    className="f-in"
+    type="email"
+    name="email"
+    placeholder="Work email address"
+    required
+  />
+
+  <button
+    className="f-btn"
+    type="submit"
+  >
+    SUBSCRIBE FREE →
+  </button>
+
+  <p className="f-note">
+    No spam. Unsubscribe anytime. Read by 22,000+ semiconductor professionals.
+  </p>
+</form>
         </div>
       </div>
     </section>
