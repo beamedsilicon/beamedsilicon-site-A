@@ -23,12 +23,17 @@ export function SiteHeader() {
             </span>
           </a>
           <ul className="nav-links">
-            <li><a href="#">News</a></li>
-            <li><a href="#sc-map">Supply Chain</a></li>
-            <li><a href="#">Companies</a></li>
-            <li><a href="#">Markets</a></li>
-            <li><a href="#">Policy</a></li>
-          </ul>
+        <li><a href="#">News</a></li>
+        <li><a href="#sc-map">Supply Chain</a></li>
+        <li><a href="#">Companies</a></li>
+        {/* 👇 UPDATED LINE TO OPEN NEW TAB 👇 */}
+        <li>
+          <a href="/market" target="_blank" rel="noopener noreferrer">
+            Markets
+          </a>
+        </li>
+        <li><a href="#">Policy</a></li>
+      </ul>
           <a href="#contact" className="btn-sub">
             CONTACT
           </a>
