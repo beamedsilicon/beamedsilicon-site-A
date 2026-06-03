@@ -2,16 +2,13 @@
  * GET /api/finance/quote?symbols=NVDA,ASML,TSM
  *
  * Returns real-time quote data for one or more ticker symbols.
- * Uses yahooFinance.quote() which accepts an array natively — a single
- * network call instead of N parallel quoteSummary calls, which avoids
- * Yahoo rate-limiting on large tier batches.
+ * Uses yahooFinance.quote() with an array — one network round-trip
+ * regardless of how many symbols are requested.
  *
- * Cached for 60 s to avoid rate-limiting on busy pages.
+ * Cached 60 s per unique symbol set.
  *
- * Response shape:
- *   { quotes: QuoteResult[] }
- *   or on error:
- *   { error: string, code: number }
+ * Success:  { quotes: QuoteResult[], cached: boolean }
+ * Error:    { error: string, code: number }
  */
 
 import { NextRequest, NextResponse } from "next/server"
@@ -21,19 +18,24 @@ const TTL_MS = 60_000
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl
-  const raw = searchParams.get("symbols") ?? ""
+  const symbolsParam = searchParams.get("symbols") ?? ""
 
-  if (!raw.trim()) {
+  if (!symbolsParam.trim()) {
     return NextResponse.json(
       { error: "Missing required query param: symbols", code: 400 },
       { status: 400 }
     )
   }
 
-  // Dedupe, uppercase, no mutation of original array
-  const symbols = [...new Set(
-    raw.split(",").map((s) => s.trim().toUpperCase()).filter(Boolean)
-  )]
+  // Dedupe + uppercase; keep exchange suffixes (e.g. TSM, 8035.T, 005930.KS)
+  const symbols = [
+    ...new Set(
+      symbolsParam
+        .split(",")
+        .map((s) => s.trim().toUpperCase())
+        .filter(Boolean)
+    ),
+  ]
 
   if (symbols.length > 50) {
     return NextResponse.json(
@@ -42,49 +44,45 @@ export async function GET(req: NextRequest) {
     )
   }
 
-  // Sort a copy for a stable cache key — never mutate the symbols array
+  // Stable cache key — sort a copy so NVDA,ASML and ASML,NVDA hit the same entry
   const cacheKey = `quote:${[...symbols].sort().join(",")}`
-  const cached = await fromCache<object[]>(cacheKey)
+  const cached = fromCache<object[]>(cacheKey)
   if (cached) {
     return NextResponse.json({ quotes: cached, cached: true })
   }
 
   try {
-    // FIX: yahooFinance.quote() accepts an array and makes ONE network request,
-    // not N. This is far cheaper than N parallel quoteSummary() calls and
-    // avoids Yahoo's per-IP rate limit on large batches.
-    const rawQuotes = await yahooFinance.quote(symbols, {
-      fields: [
-        "symbol", "shortName", "longName", "currency",
-        "regularMarketPrice", "regularMarketChange", "regularMarketChangePercent",
-        "regularMarketVolume", "regularMarketOpen", "regularMarketDayHigh",
-        "regularMarketDayLow", "marketCap", "fiftyTwoWeekHigh", "fiftyTwoWeekLow",
-        "marketState", "fullExchangeName",
-      ],
-    }) as Array<any> | any
+    // yahooFinance.quote() accepts a string array and returns an array.
+    // Do NOT pass a second `fields` argument — in yahoo-finance2 v2 the
+    // queryOptions shape is { return?: "array" | "object" } only; passing
+    // unknown keys breaks the internal schema validation and returns nothing.
+    const quoteData = await yahooFinance.quote(symbols)
 
-    const results = (Array.isArray(rawQuotes) ? rawQuotes : [rawQuotes]).map((q: any) => ({
-      symbol: q.symbol,
-      shortName: q.shortName ?? q.longName ?? q.symbol,
-      currency: q.currency ?? "USD",
-      regularMarketPrice: q.regularMarketPrice ?? null,
-      regularMarketChange: q.regularMarketChange ?? null,
+    // Normalise to array regardless of single vs multi return
+    const raw = Array.isArray(quoteData) ? quoteData : [quoteData]
+
+    const results = raw.map((q) => ({
+      symbol:                     q.symbol,
+      shortName:                  q.shortName ?? q.longName ?? q.symbol,
+      currency:                   q.currency             ?? "USD",
+      regularMarketPrice:         q.regularMarketPrice   ?? null,
+      regularMarketChange:        q.regularMarketChange  ?? null,
       regularMarketChangePercent: q.regularMarketChangePercent ?? null,
-      regularMarketVolume: q.regularMarketVolume ?? null,
-      regularMarketOpen: q.regularMarketOpen ?? null,
-      regularMarketDayHigh: q.regularMarketDayHigh ?? null,
-      regularMarketDayLow: q.regularMarketDayLow ?? null,
-      marketCap: q.marketCap ?? null,
-      fiftyTwoWeekHigh: q.fiftyTwoWeekHigh ?? null,
-      fiftyTwoWeekLow: q.fiftyTwoWeekLow ?? null,
-      marketState: q.marketState ?? null,
-      exchangeName: q.fullExchangeName ?? null,
+      regularMarketVolume:        q.regularMarketVolume  ?? null,
+      regularMarketOpen:          q.regularMarketOpen    ?? null,
+      regularMarketDayHigh:       q.regularMarketDayHigh ?? null,
+      regularMarketDayLow:        q.regularMarketDayLow  ?? null,
+      marketCap:                  q.marketCap            ?? null,
+      fiftyTwoWeekHigh:           q.fiftyTwoWeekHigh     ?? null,
+      fiftyTwoWeekLow:            q.fiftyTwoWeekLow      ?? null,
+      marketState:                q.marketState          ?? null,
+      exchangeName:               q.fullExchangeName     ?? null,
     }))
 
     setCache(cacheKey, results, TTL_MS)
     return NextResponse.json({ quotes: results, cached: false })
   } catch (err) {
     const apiError = toApiError(err)
-    return NextResponse.json(apiError, { status: apiError.code ?? apiError.status ?? 500 })
+    return NextResponse.json(apiError, { status: apiError.code })
   }
 }

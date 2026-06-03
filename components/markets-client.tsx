@@ -199,8 +199,14 @@ export function MarketsClient({ tierData }: Props) {
       const results = await Promise.all(
         chunks.map((chunk) =>
           fetch(`/api/finance/quote?symbols=${chunk.join(",")}`)
-            .then((r) => r.json())
-            .then((d) => (d.quotes ?? []) as QuoteData[])
+            .then((r) => {
+              if (!r.ok) throw new Error(`API error ${r.status}: ${r.statusText}`)
+              return r.json()
+            })
+            .then((d) => {
+              if (d.error) throw new Error(d.error)
+              return (d.quotes ?? []) as QuoteData[]
+            })
         )
       )
 
@@ -482,7 +488,7 @@ export function MarketsClient({ tierData }: Props) {
                       {/* Sparkline */}
                       <td className="mk-td mk-td-r mk-hide-md">
                         {company.ticker && hasData
-                          ? <Sparkline symbol={company.ticker.symbol} color={tier.color} />
+                          ? <Sparkline symbol={company.ticker.symbol} />
                           : <span className="mk-dash">—</span>
                         }
                       </td>
