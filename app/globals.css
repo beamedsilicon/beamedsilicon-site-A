@@ -29,7 +29,7 @@ a{color:inherit;text-decoration:none;}
 
 header{position:sticky;top:0;z-index:100;background:rgba(10,10,0,0.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
 nav{display:flex;align-items:center;height:62px;}
-.logo{display:flex;align-items:center;gap:10px;margin-right:auto;}
+.logo{display:flex;align-items:center;gap:10px;margin-right:auto;cursor:pointer;text-decoration:none;}
 .logo-name{font-family:var(--mono);font-size:14px;font-weight:500;letter-spacing:0.04em;display:flex;}
 .logo-beamed{color:#000000;background:#f5b731;padding:2px 4px;border-radius:2px 0 0 2px;}
 .logo-silicon{color:#f5b731;background:#000000;padding:2px 4px;border-radius:0 2px 2px 0;border:1px solid rgba(245,183,49,0.3);border-left:none;}
@@ -309,7 +309,7 @@ nav{display:flex;align-items:center;height:62px;}
 .f-btn:hover{opacity:0.88;box-shadow:0 0 20px rgba(255,215,0,0.35);}
 /* FIX: keyboard focus ring on submit button */
 .f-btn:focus-visible{outline:2px solid var(--yellow);outline-offset:3px;}
-.f-note{font-size:11px;color:var(--text-2);}
+.f-note{font-size:11px;color:var(--text-2);} 
 .f-textarea{resize:vertical;min-height:100px;line-height:1.6;font-family:var(--sans);}
 
 footer{background:var(--bg-0);border-top:1px solid var(--border);padding:52px 0 28px;}
