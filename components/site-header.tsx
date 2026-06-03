@@ -3,7 +3,6 @@ export function SiteHeader() {
     <header>
       <div className="wrap">
         <nav>
-          {/* FIX: Wrapped logo in an <a> linking to "/" so clicking it returns to the homepage */}
           <a href="/" className="logo" aria-label="Beamed Silicon — home">
             <div className="logo-icon">
               <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -23,20 +22,13 @@ export function SiteHeader() {
             </span>
           </a>
           <ul className="nav-links">
-        <li><a href="#">News</a></li>
-        <li><a href="#sc-map">Supply Chain</a></li>
-        <li><a href="#">Companies</a></li>
-        {/* 👇 UPDATED LINE TO OPEN NEW TAB 👇 */}
-        <li>
-          <a href="/markets" target="_blank" rel="noopener noreferrer">
-            Markets
-          </a>
-        </li>
-        <li><a href="#">Policy</a></li>
-      </ul>
-          <a href="#contact" className="btn-sub">
-            CONTACT
-          </a>
+            <li><a href="#">News</a></li>
+            <li><a href="#sc-map">Supply Chain</a></li>
+            <li><a href="#">Companies</a></li>
+            <li><a href="/markets">Markets</a></li>
+            <li><a href="#">Policy</a></li>
+          </ul>
+          <a href="#contact" className="btn-sub">CONTACT</a>
         </nav>
       </div>
     </header>
