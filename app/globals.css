@@ -213,7 +213,6 @@ nav{display:flex;align-items:center;height:62px;}
 .co-chip .ext{font-size:8px;opacity:0;transition:opacity var(--t);margin-left:1px;}
 .co-chip:hover .ext{opacity:0.7;}
 .co-cc{font-size:9px;color:var(--text-2);font-style:normal;}
-.co-name{/* explicit span so text doesn't need positional selectors */}
 .co-chip.hidden{display:none;}
 .co-logo-wrap{
   width:18px;height:18px;border-radius:4px;
