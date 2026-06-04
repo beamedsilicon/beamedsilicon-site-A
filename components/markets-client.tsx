@@ -488,7 +488,7 @@ export function MarketsClient({ tierData }: Props) {
                       {/* Sparkline */}
                       <td className="mk-td mk-td-r mk-hide-md">
                         {company.ticker && hasData
-                          ? <Sparkline symbol={company.ticker.symbol} />
+                          ? <Sparkline symbol={company.ticker.symbol} color={tier.color} />
                           : <span className="mk-dash">—</span>
                         }
                       </td>
