@@ -1,12 +1,12 @@
 "use client"
 
-import { Fragment, useCallback, useMemo, useState } from "react"
+import { Fragment, useMemo, useState } from "react"
 import { TIERS } from "@/lib/tiers"
 import { CompanyChip } from "@/components/company-chip"
 
 export function SupplyChainExplorer() {
   const [query, setQuery] = useState("")
-  const [manualOpen, setManualOpen] = useState<Record<number, boolean>>({})
+  const [manualOpen, setManualOpen] = useState<Record<number, boolean>>({ 1: true })
 
   const q = query.toLowerCase().trim()
 
@@ -19,13 +19,10 @@ export function SupplyChainExplorer() {
     return { totalMatches: total }
   }, [q])
 
-  // FIX: Wrap in useCallback so stable reference across renders
-  const toggleTier = useCallback((level: number) => {
-    // FIX: When searching, toggling is disabled. Previously this was silent —
-    // now we simply guard here (cursor: default on the element signals this to users).
+  const toggleTier = (level: number) => {
     if (q) return
     setManualOpen((prev) => ({ ...prev, [level]: !prev[level] }))
-  }, [q])
+  }
 
   let note = ""
   if (q) {
@@ -51,17 +48,13 @@ export function SupplyChainExplorer() {
         </div>
         <div className="sc-search">
           <input
-            type="search"
+            type="text"
             placeholder="Search 350 companies..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             aria-label="Search companies"
-            // FIX: type="search" gives native clear button on mobile
           />
-          {/* FIX: role="status" + aria-live so screen readers announce result counts */}
-          <span className="sc-search-note" role="status" aria-live="polite">
-            {note}
-          </span>
+          <span className="sc-search-note">{note}</span>
         </div>
 
         <div id="tier-container">
@@ -75,15 +68,8 @@ export function SupplyChainExplorer() {
                   <div
                     className="tier-hd"
                     onClick={() => toggleTier(tier.level)}
-                    // FIX: Added aria-expanded for screen readers to announce open/closed state.
-                    // Also aria-controls links the header to the body panel.
-                    // When searching, aria-disabled signals the button is inactive.
                     role="button"
-                    tabIndex={q ? -1 : 0}
-                    aria-expanded={isOpen}
-                    aria-controls={`tier-body-${tier.level}`}
-                    aria-disabled={q ? "true" : undefined}
-                    style={q ? { cursor: "default" } : undefined}
+                    tabIndex={0}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" || e.key === " ") {
                         e.preventDefault()
@@ -94,7 +80,6 @@ export function SupplyChainExplorer() {
                     <div
                       className="tier-badge"
                       style={{ background: tier.cbg, color: tier.color, border: `1px solid ${tier.cbr}` }}
-                      aria-hidden="true"
                     >
                       L{tier.level}
                     </div>
@@ -107,34 +92,36 @@ export function SupplyChainExplorer() {
                     <div
                       className="tier-cnt"
                       style={{ background: tier.cbg, color: tier.color, border: `1px solid ${tier.cbr}` }}
-                      aria-label={`${tier.cos.length} companies`}
                     >
                       {tier.cos.length} companies
                     </div>
-                    <div className="tier-arrow" aria-hidden="true">↓</div>
+                    <div className="tier-arrow">↓</div>
                   </div>
-                  {/* FIX: Added id to match aria-controls on the header */}
-                  <div className="tier-bd" id={`tier-body-${tier.level}`} role="region" aria-label={tier.name}>
+                  <div className="tier-bd">
                     <p className="tier-desc">{tier.desc}</p>
-                    <div className="co-grid">
-                      {tier.cos.map((company) => {
-                        const hidden = q ? !company[0].toLowerCase().includes(q) : false
-                        return (
-                          <CompanyChip
-                            key={company[0]}
-                            company={company}
-                            color={tier.color}
-                            cbg={tier.cbg}
-                            hidden={hidden}
-                          />
-                        )
-                      })}
-                    </div>
+                    {q && tierMatches === 0 ? (
+                      <p className="tier-no-match">No companies match in this tier</p>
+                    ) : (
+                      <div className="co-grid">
+                        {tier.cos.map((company) => {
+                          const hidden = q ? !company[0].toLowerCase().includes(q) : false
+                          return (
+                            <CompanyChip
+                              key={company[0]}
+                              company={company}
+                              color={tier.color}
+                              cbg={tier.cbg}
+                              hidden={hidden}
+                            />
+                          )
+                        })}
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 {idx < TIERS.length - 1 && (
-                  <div className="tier-conn" aria-hidden="true">
+                  <div className="tier-conn">
                     <span>↓ SUPPLIES INTO</span>
                   </div>
                 )}

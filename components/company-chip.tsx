@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import type { Company } from "@/lib/tiers"
 
 interface CompanyChipProps {
@@ -22,9 +22,37 @@ export function CompanyChip({ company, color, cbg, hidden }: CompanyChipProps) {
     ]
   }, [url])
 
-  const [srcIndex, setSrcIndex] = useState(0)
-  const failed = srcIndex >= sources.length
+  // null = still resolving, "" = all failed, any string = resolved URL
+  const [resolvedSrc, setResolvedSrc] = useState<string | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+
+    const tryNext = (i: number) => {
+      if (cancelled) return
+      if (i >= sources.length) {
+        setResolvedSrc("")
+        return
+      }
+      const img = new Image()
+      img.onload = () => {
+        if (!cancelled) setResolvedSrc(sources[i]!)
+      }
+      img.onerror = () => {
+        if (!cancelled) tryNext(i + 1)
+      }
+      img.src = sources[i]!
+    }
+
+    tryNext(0)
+    return () => {
+      cancelled = true
+    }
+  }, [sources])
+
   const firstLetter = name.charAt(0).toUpperCase()
+  const showFallback = resolvedSrc === ""
+  const showLogo = resolvedSrc !== null && resolvedSrc !== ""
 
   return (
     <a
@@ -34,33 +62,22 @@ export function CompanyChip({ company, color, cbg, hidden }: CompanyChipProps) {
       rel="noopener noreferrer"
       style={{ ["--tc" as string]: color, ["--tbg" as string]: cbg }}
     >
-      {!failed ? (
+      {showLogo ? (
         <span className="co-logo-wrap">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={sources[srcIndex] || "/placeholder.svg"}
-            alt=""
-            loading="lazy"
-            width={18}
-            height={18}
-            onError={() => setSrcIndex((i) => i + 1)}
-          />
+          <img src={resolvedSrc} alt="" />
         </span>
-      ) : (
-        // FIX: was always rendered with display:flex inline style even when not failed.
-        // Now only rendered when failed === true, so CSS display:none on .co-logo-fb is irrelevant
-        // (we simply don't render it). This removes the conflicting inline style entirely.
-        <span
-          className="co-logo-fb"
-          style={{ ["--tc" as string]: color }}
-          aria-hidden="true"
-        >
+      ) : showFallback ? (
+        <span className="co-logo-fb" style={{ ["--tc" as string]: color, display: "flex" }}>
           {firstLetter}
         </span>
+      ) : (
+        // Still resolving — render a neutral placeholder the same size as the logo
+        <span className="co-logo-wrap" style={{ background: "transparent", border: "none" }} />
       )}
-      <span className="co-name">{name}</span>
+      {name}
       <em className="co-cc">{cc}</em>
-      <span className="ext" aria-hidden="true">↗</span>
+      <span className="ext">↗</span>
     </a>
   )
 }
