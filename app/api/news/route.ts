@@ -4,25 +4,36 @@ import { TIERS } from "@/lib/tiers"
 const API_KEY = "pub_75b628abdbd1493a94235040b3bccd39"
 const BASE    = "https://newsdata.io/api/1/news"
 
-// Build a boolean OR query from company names.
-// Wraps multi-word names in quotes; limits to 6 to stay within URL limits.
+/**
+ * newsdata.io rejects queries containing special chars like periods, hyphens
+ * and parentheses when they appear inside quoted phrases.
+ * Strip them and normalise whitespace before wrapping in quotes.
+ */
+function sanitise(name: string): string {
+  return name
+    .replace(/^the\s+/i, "")          // drop leading "The …"
+    .replace(/[^a-zA-Z0-9\s]/g, " ")  // periods, hyphens, commas → space
+    .replace(/\s+/g, " ")
+    .trim()
+}
+
 function buildQuery(tier: string | null, company: string | null): string {
   if (company?.trim()) {
-    return `"${company.trim()}"`
+    return `"${sanitise(company.trim())}"`
   }
 
   if (tier && tier !== "all") {
     const t = TIERS.find(t => String(t.level) === tier)
     if (t) {
+      // 5 companies keeps the query short; quoted phrases need clean strings
       return t.cos
-        .slice(0, 6)
-        .map(([name]) => `"${name}"`)
+        .slice(0, 5)
+        .map(([name]) => `"${sanitise(name)}"`)
         .join(" OR ")
     }
   }
 
-  // Broad industry default
-  return '"semiconductor" OR "TSMC" OR "Nvidia" OR "ASML" OR "chip manufacturing"'
+  return '"semiconductor" OR "TSMC" OR "Nvidia" OR "ASML" OR "chip"'
 }
 
 export async function GET(req: NextRequest) {
@@ -37,20 +48,19 @@ export async function GET(req: NextRequest) {
     apikey:   API_KEY,
     q,
     language: "en",
-    category: "technology,business",
+    // NOTE: "category" is omitted — the free plan returns 422 when it is set
   })
   if (nextPage) params.set("page", nextPage)
 
   try {
-    // Cache responses for 15 min to stay well within the 200 req/day free limit
     const res = await fetch(`${BASE}?${params}`, {
       next: { revalidate: 900 },
     })
 
     if (!res.ok) {
-      const body = await res.text().catch(() => "")
+      const detail = await res.text().catch(() => "")
       return NextResponse.json(
-        { status: "error", message: `newsdata.io ${res.status}`, detail: body },
+        { status: "error", message: `newsdata.io ${res.status}`, detail },
         { status: res.status }
       )
     }
