@@ -1,75 +1,76 @@
-/**
- * GET /api/finance/quote?symbols=NVDA,ASML,TSM
- */
-
 import { NextRequest, NextResponse } from "next/server"
-import yahooFinance, { fromCache, setCache, toApiError } from "@/lib/yahoo-finance"
 
-const TTL_MS = 60_000
+interface YahooQuote {
+  symbol:                      string
+  shortName?:                  string
+  longName?:                   string
+  regularMarketPrice?:         number
+  regularMarketChange?:        number
+  regularMarketChangePercent?: number
+  marketCap?:                  number
+  currency?:                   string
+  regularMarketDayHigh?:       number
+  regularMarketDayLow?:        number
+  fiftyTwoWeekHigh?:           number
+  fiftyTwoWeekLow?:            number
+  regularMarketVolume?:        number
+}
 
 export async function GET(req: NextRequest) {
-  const { searchParams } = req.nextUrl
-  const symbolsParam = searchParams.get("symbols") ?? ""
-
-  if (!symbolsParam.trim()) {
-    return NextResponse.json(
-      { error: "Missing required query param: symbols", code: 400 },
-      { status: 400 }
-    )
+  const symbols = new URL(req.url).searchParams.get("symbols")
+  if (!symbols) {
+    return NextResponse.json({ error: "symbols param required" }, { status: 400 })
   }
 
-  const symbols = [
-    ...new Set(
-      symbolsParam
-        .split(",")
-        .map((s) => s.trim().toUpperCase())
-        .filter(Boolean)
-    ),
-  ]
-
-  if (symbols.length > 50) {
-    return NextResponse.json(
-      { error: "Maximum 50 symbols per request", code: 400 },
-      { status: 400 }
-    )
-  }
-
-  const cacheKey = `quote:${[...symbols].sort().join(",")}`
-  const cached = fromCache<object[]>(cacheKey)
-  if (cached) {
-    return NextResponse.json({ quotes: cached, cached: true })
-  }
+  const url =
+    `https://query1.finance.yahoo.com/v7/finance/quote` +
+    `?symbols=${encodeURIComponent(symbols)}` +
+    `&fields=shortName,longName,regularMarketPrice,regularMarketChange,` +
+    `regularMarketChangePercent,marketCap,currency,` +
+    `regularMarketDayHigh,regularMarketDayLow,` +
+    `fiftyTwoWeekHigh,fiftyTwoWeekLow,regularMarketVolume`
 
   try {
-    const quoteData = await yahooFinance.quote(symbols)
+    const res = await fetch(url, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
+          "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        Accept: "application/json",
+      },
+      next: { revalidate: 60 }, // cache 60 s
+    })
 
-    // Explicitly type as Record<string, unknown>[] to avoid `never[]` inference
-    const raw: Record<string, unknown>[] = Array.isArray(quoteData)
-      ? (quoteData as Record<string, unknown>[])
-      : ([quoteData] as Record<string, unknown>[])
+    if (!res.ok) {
+      return NextResponse.json(
+        { error: `Yahoo Finance ${res.status}` },
+        { status: res.status }
+      )
+    }
 
-    const results = raw.map((q) => ({
-      symbol:                     q["symbol"],
-      shortName:                  q["shortName"] ?? q["longName"] ?? q["symbol"],
-      currency:                   q["currency"]             ?? "USD",
-      regularMarketPrice:         q["regularMarketPrice"]   ?? null,
-      regularMarketChange:        q["regularMarketChange"]  ?? null,
-      regularMarketChangePercent: q["regularMarketChangePercent"] ?? null,
-      regularMarketVolume:        q["regularMarketVolume"]  ?? null,
-      regularMarketOpen:          q["regularMarketOpen"]    ?? null,
-      regularMarketDayHigh:       q["regularMarketDayHigh"] ?? null,
-      regularMarketDayLow:        q["regularMarketDayLow"]  ?? null,
-      marketCap:                  q["marketCap"]            ?? null,
-      fiftyTwoWeekHigh:           q["fiftyTwoWeekHigh"]     ?? null,
-      fiftyTwoWeekLow:            q["fiftyTwoWeekLow"]      ?? null,
-      marketState:                q["marketState"]          ?? null,
-      exchangeName:               q["fullExchangeName"]     ?? null,
-    }))
+    const data   = await res.json()
+    const quotes: YahooQuote[] = data?.quoteResponse?.result ?? []
 
-    setCache(cacheKey, results, TTL_MS)
-    return NextResponse.json({ quotes: results, cached: false })
-  } catch (err) {
-    const apiError = toApiError(err)
-    return NextResponse.json(apiError, { status: apiError.code })
+    const formatted = quotes
+      .filter(q => q.regularMarketPrice != null)
+      .map(q => ({
+        symbol:        q.symbol,
+        name:          q.shortName || q.longName || q.symbol,
+        price:         q.regularMarketPrice!,
+        change:        q.regularMarketChange        ?? 0,
+        changePct:     q.regularMarketChangePercent ?? 0,
+        marketCap:     q.marketCap                 ?? null,
+        currency:      q.currency                  ?? "USD",
+        dayHigh:       q.regularMarketDayHigh      ?? null,
+        dayLow:        q.regularMarketDayLow       ?? null,
+        week52High:    q.fiftyTwoWeekHigh           ?? null,
+        week52Low:     q.fiftyTwoWeekLow            ?? null,
+        volume:        q.regularMarketVolume        ?? null,
+      }))
+
+    return NextResponse.json(formatted)
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : "Unknown error"
+    return NextResponse.json({ error: msg }, { status: 500 })
   }
 }
