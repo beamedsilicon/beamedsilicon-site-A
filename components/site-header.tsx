@@ -31,7 +31,7 @@ export function SiteHeader() {
             <li><Link href="/policy">Policy</Link></li>
           </ul>
           <Link href="/#newsletter" className="btn-sub">
-            SUBSCRIBE
+            CONTACT ME
           </Link>
         </nav>
       </div>
