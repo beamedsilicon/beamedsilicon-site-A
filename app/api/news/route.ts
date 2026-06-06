@@ -4,32 +4,32 @@ import { TIERS } from "@/lib/tiers"
 const API_KEY = "pub_75b628abdbd1493a94235040b3bccd39"
 const BASE    = "https://newsdata.io/api/1/news"
 
-/**
- * newsdata.io rejects queries containing special chars like periods, hyphens
- * and parentheses when they appear inside quoted phrases.
- * Strip them and normalise whitespace before wrapping in quotes.
- */
+// Every tier query is AND'd with this so "Apple" returns chip news, not sports scores
+const SEMI_CONTEXT = "(semiconductor OR chip OR chipmaker OR processor OR wafer OR fab OR silicon)"
+
 function sanitise(name: string): string {
   return name
-    .replace(/^the\s+/i, "")          // drop leading "The …"
-    .replace(/[^a-zA-Z0-9\s]/g, " ")  // periods, hyphens, commas → space
+    .replace(/^the\s+/i, "")
+    .replace(/[^a-zA-Z0-9\s]/g, " ")
     .replace(/\s+/g, " ")
     .trim()
 }
 
 function buildQuery(tier: string | null, company: string | null): string {
+  // Company search: user typed something specific, trust it as-is
   if (company?.trim()) {
-    return `"${sanitise(company.trim())}"`
+    return `"${sanitise(company.trim())}" AND ${SEMI_CONTEXT}`
   }
 
   if (tier && tier !== "all") {
     const t = TIERS.find(t => String(t.level) === tier)
     if (t) {
-      // 5 companies keeps the query short; quoted phrases need clean strings
-      return t.cos
+      const orList = t.cos
         .slice(0, 5)
         .map(([name]) => `"${sanitise(name)}"`)
         .join(" OR ")
+      // Parenthesise the OR list then AND with semiconductor context
+      return `(${orList}) AND ${SEMI_CONTEXT}`
     }
   }
 
@@ -48,7 +48,6 @@ export async function GET(req: NextRequest) {
     apikey:   API_KEY,
     q,
     language: "en",
-    // NOTE: "category" is omitted — the free plan returns 422 when it is set
   })
   if (nextPage) params.set("page", nextPage)
 
