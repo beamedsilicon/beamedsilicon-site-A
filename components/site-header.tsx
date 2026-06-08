@@ -28,6 +28,7 @@ export function SiteHeader() {
             <li><a href="/#sc-map">Supply Chain</a></li>
             <li><Link href="/companies">Companies</Link></li>
             <li><Link href="/markets">Markets</Link></li>
+            <li><Link href="/analysis">Analysis</Link></li>
             <li><Link href="/policy">Policy</Link></li>
           </ul>
           <Link href="/#newsletter" className="btn-sub">
