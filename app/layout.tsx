@@ -17,7 +17,7 @@ const sourceSerif = Source_Serif_4({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://beamedsilicon.com"),
+  metadataBase: new URL("https://beamedsilicon.qzz.io"),
   title: {
     default: "Beamed Silicon — Semiconductor Supply Chain Intelligence",
     template: "%s | Beamed Silicon",
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://beamedsilicon.com",
+    url: "https://beamedsilicon.qzz.io",
     siteName: "Beamed Silicon",
     title: "Beamed Silicon — Semiconductor Supply Chain Intelligence",
     description:
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, "max-video-preview": -1, "max-image-preview": "large", "max-snippet": -1 },
   },
   alternates: {
-    canonical: "https://beamedsilicon.com",
+    canonical: "https://beamedsilicon.qzz.io",
   },
 }
 
@@ -79,7 +79,7 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "Beamed Silicon Intelligence",
-  url: "https://beamedsilicon.com",
+  url: "https://beamedsilicon.qzz.io",
   description:
     "Semiconductor supply chain intelligence platform covering 350 companies across 7 tiers from raw material extraction to fabless chip design.",
   sameAs: [],
