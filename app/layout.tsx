@@ -75,6 +75,21 @@ export const viewport: Viewport = {
 }
 
 // JSON-LD structured data — tells Google exactly what this site is
+// WebSite schema — directly controls the site name Google shows in search results
+const websiteLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Beamed Silicon",
+  alternateName: "Beamed Silicon Intelligence",
+  url: "https://beamedsilicon.qzz.io",
+  description: "Semiconductor supply chain intelligence — 350 companies, 7 tiers, from quartz mines to AI accelerators.",
+  potentialAction: {
+    "@type": "SearchAction",
+    target: "https://beamedsilicon.qzz.io/?search={search_term_string}",
+    "query-input": "required name=search_term_string",
+  },
+}
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
@@ -100,7 +115,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify([websiteLd, jsonLd]) }}
         />
       </head>
       <body>{children}</body>
