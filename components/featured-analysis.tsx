@@ -1,9 +1,10 @@
 const SCV_NODES = [
-  { dot: "#f5a623", label: "LASER — LEVEL 4", name: "TRUMPF CO₂ Driver Laser", line: "linear-gradient(#f5a623,#9b7cff)" },
-  { dot: "#9b7cff", label: "OPTICS — LEVEL 4", name: "Carl Zeiss SMT Lens Block", line: "linear-gradient(#9b7cff,#c77dff)" },
-  { dot: "#c77dff", label: "TOOL — LEVEL 3", name: "ASML TWINSCAN EXE:5000", line: "linear-gradient(#c77dff,#4a9eff)" },
-  { dot: "#4a9eff", label: "FOUNDRY — LEVEL 2", name: "TSMC N2 / Intel Foundry 18A", line: "linear-gradient(#4a9eff,#00d4ff)" },
-  { dot: "#00d4ff", label: "CHIP DESIGNER — LEVEL 1", name: "Nvidia · Apple · AMD · AWS", line: null },
+  { dot: "#f5a623", label: "MINING — TIER 7",   name: "Sibelco Spruce Pine Quartz → SiO₂ feedstock",       line: "linear-gradient(#f5a623,#00e0a0)" },
+  { dot: "#00e0a0", label: "MATERIALS — TIER 6", name: "Shin-Etsu Chemical → 300mm silicon wafer",          line: "linear-gradient(#00e0a0,#9b7cff)" },
+  { dot: "#9b7cff", label: "EQUIPMENT — TIER 3", name: "ASML High-NA EUV → N2 / A16 lithography",          line: "linear-gradient(#9b7cff,#4a9eff)" },
+  { dot: "#4a9eff", label: "FOUNDRY — TIER 2",   name: "TSMC N2 (Fab 20/22) → 2nm die at $30K/wafer",      line: "linear-gradient(#4a9eff,#c77dff)" },
+  { dot: "#c77dff", label: "PACKAGING — TIER 2", name: "TSMC CoWoS 5.5× reticle → 98% yield, 50+ wk lead", line: "linear-gradient(#c77dff,#00d4ff)" },
+  { dot: "#00d4ff", label: "DESIGNER — TIER 1",  name: "Nvidia Rubin / Apple A20 → end silicon",            line: null },
 ]
 
 export function FeaturedAnalysis() {
@@ -17,28 +18,30 @@ export function FeaturedAnalysis() {
         <div className="feat-card">
           <div className="feat-body">
             <div className="feat-meta">
-              <span className="badge b-c">EQUIPMENT</span>
-              <span className="badge b-a">SUPPLY RISK</span>
+              <span className="badge b-c">FOUNDRY</span>
+              <span className="badge b-a">PACKAGING</span>
               <span className="art-date">May 28, 2026</span>
             </div>
             <h2 className="feat-title">
-              ASML&apos;s High-NA EUV Ramp: What the 10th EXE:5000 Delivery Means for TSMC and Intel Foundry
+              TSMC's 2nm Bottleneck: Why CoWoS, Not the Wafer, Is Now the Constraint That Governs the AI Hardware Roadmap
             </h2>
             <p className="feat-excerpt">
-              Every ASML EUV machine depends on Carl Zeiss SMT for its lens block and TRUMPF for the CO₂ laser that
-              generates EUV light — a two-supplier constraint that governs the entire lithography roadmap. As TSMC
-              places orders for N2-class High-NA tooling and Intel Foundry races to qualify 18A, we examine the optics
-              and laser supply chain that will determine which fab wins advanced node leadership through 2028.
+              TSMC's N2 node entered volume production in early 2026 with wafer costs exceeding $30,000 — a 50% step-up
+              from N3. But the harder constraint is no longer the front-end wafer: it is the CoWoS advanced packaging
+              step that bonds logic die to HBM stacks. All six CoWoS lines carry 50+ week lead times, and TSMC's
+              AI packaging capacity must grow 80% this year just to keep pace with demand. We trace the full vertical
+              from Spruce Pine quartz through silicon wafer growth, EUV exposure, and CoWoS assembly — and map
+              exactly where the next two years of AI chip supply will be won or lost.
             </p>
             <div className="feat-foot">
               <div className="author">
                 <div className="av">SR</div>
                 <div>
                   <div className="av-n">Soren Rathmann</div>
-                  <div className="av-t">Equipment &amp; Lithography Analyst</div>
+                  <div className="av-t">Foundry &amp; Packaging Analyst</div>
                 </div>
               </div>
-              <a href="#" className="read-link">
+              <a href="/analysis/tsmc-2nm-cowos-constraint" className="read-link">
                 READ ANALYSIS →
               </a>
             </div>
@@ -55,7 +58,7 @@ export function FeaturedAnalysis() {
                     </div>
                   </div>
                   {node.line && (
-                    <div style={{ width: "1px", height: "16px", margin: "0 auto 6px", background: node.line }} />
+                    <div style={{ width: 1, height: 16, margin: "0 auto 6px", background: node.line }} />
                   )}
                 </div>
               ))}

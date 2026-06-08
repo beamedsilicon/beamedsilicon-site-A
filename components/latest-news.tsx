@@ -3,31 +3,34 @@ const ARTICLES = [
     cls: "c1",
     badgeCls: "b-c",
     badge: "MEMORY",
-    date: "May 26, 2026",
-    title: "Samsung vs SK Hynix: Who Controls the AI Memory Stack in 2026",
+    date: "Jun 5, 2026",
+    title: "HBM4 Shortage Set to Deepen: SK Hynix and Samsung Warn Supply Gap Persists into 2027",
     excerpt:
-      "Both Samsung Foundry and SK Hynix are racing to supply HBM4 to Nvidia and AMD — but thermal compression bonding yield at Hanmi Semiconductor is becoming the deciding variable.",
-    readTime: "10 min read",
+      "SK Hynix posted a record Q1 2026 operating margin of 72% — surpassing Nvidia's 65% — as its entire HBM capacity sold out months in advance. Samsung's memory chief confirmed shortages across DRAM products will continue through at least 2027, with customers signing multi-year contracts to secure allocation. The pivot to HBM is now consuming 23% of global DRAM wafer output.",
+    readTime: "8 min read",
+    href: "/news/hbm4-shortage-2026",
   },
   {
     cls: "c2",
     badgeCls: "b-a",
-    badge: "MATERIALS",
-    date: "May 23, 2026",
-    title: "Ajinomoto's ABF Film Monopoly: The Single-Source Risk in Every Advanced Package",
+    badge: "FOUNDRY",
+    date: "May 28, 2026",
+    title: "TSMC's 2nm Ramp: CoWoS Yields Hit 98%, Five New Fabs Breaking Ground Simultaneously",
     excerpt:
-      "Every Intel, TSMC, and AMD package using flip-chip BGA requires Ajinomoto Build-up Film. There is no qualified substitute. We map the scale of this extraordinary single-source dependency.",
-    readTime: "8 min read",
+      "At its 2026 Technology Symposium, TSMC disclosed that its 5.5-reticle CoWoS advanced packaging — the largest in the industry — has exceeded 98% yield in volume production. The company is launching five new fabrication plants in 2026 and projects 70% compound annual growth in 2nm capacity through 2028. All three 2nm fabs carry lead times of 78–104 weeks, fully booked.",
+    readTime: "11 min read",
+    href: "/news/tsmc-2nm-cowos-2026",
   },
   {
     cls: "c3",
     badgeCls: "b-r",
     badge: "GEOPOLITICS",
-    date: "May 20, 2026",
-    title: "China's Equipment Independence Race: Naura, AMEC, and the 14nm Ceiling",
+    date: "Apr 28, 2026",
+    title: "The MATCH Act: Washington Moves to Ban DUV Lithography Exports to China",
     excerpt:
-      "Naura Technology Group and AMEC are China's answer to Applied Materials and Lam Research. We assess how far domestic CVD and etch tools have come — and where the hard ceiling remains.",
-    readTime: "14 min read",
+      "US lawmakers introduced the Multilateral Alignment of Technology Controls on Hardware (MATCH) Act, targeting ASML's DUV immersion systems — the last class of lithography equipment still legally flowing to Chinese fabs. The bill would also ban servicing of already-installed equipment in China, threatening a portion of ASML's high-margin service revenue. China accounts for roughly 20% of ASML's projected 2026 sales.",
+    readTime: "9 min read",
+    href: "/news/match-act-duv-china-2026",
   },
 ]
 
@@ -36,15 +39,14 @@ export function LatestNews() {
     <section className="news">
       <div className="wrap">
         <div className="sec-head">
-          <span className="sec-label">LATEST NEWS</span>
+          <span className="sec-label">LATEST ANALYSIS</span>
           <div className="sec-rule" />
-          <a href="#" className="sec-more">
-            ALL STORIES →
-          </a>
+          <a href="/news" className="sec-more">ALL STORIES →</a>
         </div>
         <div className="grid-3">
           {ARTICLES.map((a) => (
-            <div className={`art-card ${a.cls}`} key={a.title}>
+            <a key={a.title} href={a.href} className={`art-card ${a.cls}`}
+              style={{ textDecoration: "none", color: "inherit" }}>
               <div className="card-meta">
                 <span className={`badge ${a.badgeCls}`}>{a.badge}</span>
                 <span className="art-date">{a.date}</span>
@@ -55,7 +57,7 @@ export function LatestNews() {
                 <span className="rt">{a.readTime}</span>
                 <span className="arr">→</span>
               </div>
-            </div>
+            </a>
           ))}
         </div>
       </div>
