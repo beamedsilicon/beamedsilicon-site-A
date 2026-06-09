@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next"
 import { IBM_Plex_Mono, IBM_Plex_Sans, Source_Serif_4 } from "next/font/google"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import "./globals.css"
 
 const plexSans = IBM_Plex_Sans({
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
     template: "%s | Beamed Silicon",
   },
   description:
-    "The definitive semiconductor intelligence platform. 350 companies, 7 supply chain tiers — from quartz mines to AI accelerators. Real-time stock prices, supply chain risk analysis, and weekly deep-dives used by procurement leads, investors, and engineers.",
+    "The definitive semiconductor intelligence platform. 350 companies, 7 supply chain tiers — from quartz mines to AI accelerators. Real-time stock prices, supply chain risk analysis, and weekl[...]
   keywords: [
     "semiconductor supply chain", "chip supply chain", "TSMC", "ASML", "Nvidia",
     "HBM memory", "semiconductor stocks", "semiconductor news", "CoWoS packaging",
@@ -118,7 +119,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{ __html: JSON.stringify([websiteLd, jsonLd]) }}
         />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <SpeedInsights />
+      </body>
     </html>
   )
 }
