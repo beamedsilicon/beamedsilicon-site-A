@@ -601,6 +601,6 @@ export const FULL_ARTICLES: FullArticle[] = [
   },
 ]
 
-export function getFullArticle(slug: string): FullArticle | undefined {
+function getFullArticle(slug: string): FullArticle | undefined {
   return FULL_ARTICLES.find(a => a.slug === slug)
 }
