@@ -193,5 +193,66 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.8,
     },
+    // ── New educational articles ──────────────────────────────────────────────
+    {
+      url: `${base}/analysis/euv-lithography-physics`,
+      lastModified: new Date("2026-06-02"),
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
+    {
+      url: `${base}/analysis/high-na-euv-055`,
+      lastModified: new Date("2026-05-30"),
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
+    {
+      url: `${base}/analysis/immersion-lithography-moores-law`,
+      lastModified: new Date("2026-05-22"),
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
+    {
+      url: `${base}/analysis/morris-chang-founding-tsmc`,
+      lastModified: new Date("2026-05-10"),
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
+    {
+      url: `${base}/analysis/cowos-advanced-packaging-chiplets`,
+      lastModified: new Date("2026-04-28"),
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
+    {
+      url: `${base}/analysis/hbm-memory-wall`,
+      lastModified: new Date("2026-06-04"),
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
+    {
+      url: `${base}/analysis/panel-level-packaging-reticle-limit`,
+      lastModified: new Date("2026-04-10"),
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
+    {
+      url: `${base}/analysis/silicon-shield-geopolitics`,
+      lastModified: new Date("2026-03-28"),
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
+    {
+      url: `${base}/analysis/japan-dram-rise-fall`,
+      lastModified: new Date("2026-03-03"),
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
+    {
+      url: `${base}/analysis/risc-v-maturity-model`,
+      lastModified: new Date("2026-02-20"),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
   ]
 }
