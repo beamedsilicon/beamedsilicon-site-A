@@ -435,3 +435,22 @@ footer{background:var(--bg-0);border-top:1px solid var(--border);padding:52px 0 
   color: var(--text-2);
   letter-spacing: 0.06em;
 }
+.av-grid {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 60px;
+  align-items: start;
+  max-width: 1100px;
+}
+.av-more-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+@media (max-width: 860px) {
+  .av-grid { grid-template-columns: 1fr !important; }
+  .av-sidebar { display: none; }
+}
+@media (max-width: 600px) {
+  .av-more-grid { grid-template-columns: 1fr !important; }
+}

@@ -1,24 +1,27 @@
 "use client"
 import Link from "next/link"
+import type { MouseEvent } from "react"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
-import { FULL_ARTICLES, type FullArticle } from "@/lib/full-articles"
+import { FULL_ARTICLES } from "@/lib/full-articles"
+import type { FullArticle } from "@/lib/full-articles"
 
-export function ArticleView({ article }: { article: FullArticle }) {
-  const others = FULL_ARTICLES.filter(a => a.slug !== article.slug).slice(0, 3)
+interface Props {
+  article: FullArticle
+}
+
+export function ArticleView({ article }: Props) {
+  const others = FULL_ARTICLES.filter((a) => a.slug !== article.slug).slice(0, 3)
 
   return (
     <>
       <SiteHeader />
       <main>
 
-        {/* ── HERO ───────────────────────────────────────────────────── */}
+        {/* HERO */}
         <section style={{
-          padding: "60px 0 52px",
-          background: "var(--bg-0)",
-          borderBottom: "1px solid var(--border)",
-          position: "relative",
-          overflow: "hidden",
+          padding: "60px 0 52px", background: "var(--bg-0)",
+          borderBottom: "1px solid var(--border)", position: "relative", overflow: "hidden",
         }}>
           <div style={{
             position: "absolute", inset: 0,
@@ -27,11 +30,11 @@ export function ArticleView({ article }: { article: FullArticle }) {
           }} />
           <div style={{
             position: "absolute", top: -100, right: "5%", width: 500, height: 500,
-            background: `radial-gradient(circle,${article.categoryBg} 0%,transparent 70%)`,
+            background: "radial-gradient(circle," + article.categoryBg + " 0%,transparent 70%)",
             pointerEvents: "none",
           }} />
-
           <div className="wrap" style={{ position: "relative", zIndex: 1, maxWidth: 900 }}>
+
             <Link href="/analysis" style={{
               display: "inline-flex", alignItems: "center", gap: 6, marginBottom: 28,
               fontFamily: "var(--mono)", fontSize: "10px", fontWeight: 600,
@@ -40,21 +43,21 @@ export function ArticleView({ article }: { article: FullArticle }) {
               ← ANALYSIS
             </Link>
 
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20, flexWrap: "wrap" as const }}>
+            {/* Badges */}
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20, flexWrap: "wrap" }}>
               <span style={{
                 fontFamily: "var(--mono)", fontSize: "9.5px", fontWeight: 600,
                 letterSpacing: "0.12em", padding: "4px 10px", borderRadius: 3,
                 background: article.categoryBg, color: article.categoryColor,
-                border: `1px solid ${article.categoryBorder}`,
+                border: "1px solid " + article.categoryBorder,
               }}>
                 {article.badge}
               </span>
-              {article.tiers.map(t => (
+              {article.tiers.map((t) => (
                 <span key={t} style={{
                   fontFamily: "var(--mono)", fontSize: "9px", fontWeight: 600,
                   padding: "3px 8px", borderRadius: 3,
-                  background: "rgba(245,183,49,0.06)",
-                  color: "var(--text-2)",
+                  background: "rgba(245,183,49,0.06)", color: "var(--text-2)",
                   border: "1px solid rgba(245,183,49,0.1)",
                 }}>
                   {t}
@@ -68,15 +71,16 @@ export function ArticleView({ article }: { article: FullArticle }) {
               </span>
             </div>
 
+            {/* Title */}
             <h1 style={{
-              fontFamily: "var(--serif)",
-              fontSize: "clamp(1.6rem,3.5vw,2.4rem)",
+              fontFamily: "var(--serif)", fontSize: "clamp(1.6rem,3.5vw,2.4rem)",
               fontWeight: 600, lineHeight: 1.18, letterSpacing: "-0.01em",
               marginBottom: 18, color: "var(--text-0)", maxWidth: 820,
             }}>
               {article.title}
             </h1>
 
+            {/* Subtitle */}
             <p style={{
               fontFamily: "var(--serif)", fontSize: "1.1rem", fontWeight: 300,
               color: "var(--text-1)", lineHeight: 1.65, maxWidth: 720, marginBottom: 32,
@@ -84,13 +88,14 @@ export function ArticleView({ article }: { article: FullArticle }) {
               {article.subtitle}
             </p>
 
+            {/* Author */}
             <div style={{
               display: "flex", alignItems: "center", gap: 12,
               paddingTop: 22, borderTop: "1px solid var(--border)",
             }}>
               <div style={{
                 width: 36, height: 36, borderRadius: "50%",
-                background: article.categoryBg, border: `1px solid ${article.categoryBorder}`,
+                background: article.categoryBg, border: "1px solid " + article.categoryBorder,
                 display: "flex", alignItems: "center", justifyContent: "center",
                 fontFamily: "var(--mono)", fontSize: "10px", fontWeight: 700,
                 color: article.categoryColor, flexShrink: 0,
@@ -109,25 +114,20 @@ export function ArticleView({ article }: { article: FullArticle }) {
           </div>
         </section>
 
-        {/* ── BODY ───────────────────────────────────────────────────── */}
+        {/* BODY */}
         <section style={{ padding: "64px 0 80px", background: "var(--bg-1)" }}>
-          <div className="wrap" style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 280px",
-            gap: 60,
-            alignItems: "start",
-            maxWidth: 1100,
-          }}>
+          <div className="wrap av-grid">
 
-            {/* Article content */}
+            {/* Left: Article content */}
             <div>
-              {/* Intro */}
+
+              {/* Intro paragraph */}
               <p style={{
                 fontFamily: "var(--serif)", fontSize: "1.15rem", fontWeight: 400,
                 color: "var(--text-0)", lineHeight: 1.78,
                 marginBottom: 48, paddingBottom: 40,
                 borderBottom: "1px solid var(--border)",
-                borderLeft: `3px solid ${article.categoryColor}`,
+                borderLeft: "3px solid " + article.categoryColor,
                 paddingLeft: 20,
               }}>
                 {article.intro}
@@ -140,7 +140,7 @@ export function ArticleView({ article }: { article: FullArticle }) {
                     fontFamily: "var(--mono)", fontSize: "0.9rem", fontWeight: 600,
                     letterSpacing: "0.04em", color: article.categoryColor,
                     marginBottom: 20, paddingBottom: 12,
-                    borderBottom: `1px solid ${article.categoryBorder}`,
+                    borderBottom: "1px solid " + article.categoryBorder,
                   }}>
                     {section.heading}
                   </h2>
@@ -162,16 +162,15 @@ export function ArticleView({ article }: { article: FullArticle }) {
                   fontFamily: "var(--mono)", fontSize: "9.5px", fontWeight: 600,
                   letterSpacing: "0.18em", color: "var(--text-2)", marginBottom: 20,
                 }}>
-                  SOURCES & FURTHER READING
+                  SOURCES &amp; FURTHER READING
                 </div>
-                <div style={{ display: "flex", flexDirection: "column" as const, gap: 10 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {article.sources.map((src, i) => (
                     <a
                       key={i}
                       href={src.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="source-link"
                       style={{
                         display: "flex", alignItems: "flex-start", gap: 12,
                         padding: "12px 16px",
@@ -181,12 +180,22 @@ export function ArticleView({ article }: { article: FullArticle }) {
                         textDecoration: "none",
                         transition: "border-color .15s, background .15s",
                       }}
+                      onMouseEnter={(e: MouseEvent<HTMLAnchorElement>) => {
+                        const el = e.currentTarget
+                        el.style.borderColor = article.categoryColor
+                        el.style.background = "var(--bg-card-h)"
+                      }}
+                      onMouseLeave={(e: MouseEvent<HTMLAnchorElement>) => {
+                        const el = e.currentTarget
+                        el.style.borderColor = "var(--border)"
+                        el.style.background = "var(--bg-card)"
+                      }}
                     >
                       <span style={{
                         fontFamily: "var(--mono)", fontSize: "8.5px", fontWeight: 600,
                         color: article.categoryColor, flexShrink: 0, marginTop: 2,
                         background: article.categoryBg,
-                        border: `1px solid ${article.categoryBorder}`,
+                        border: "1px solid " + article.categoryBorder,
                         padding: "2px 6px", borderRadius: 2,
                       }}>
                         {String(i + 1).padStart(2, "0")}
@@ -199,10 +208,9 @@ export function ArticleView({ article }: { article: FullArticle }) {
                           {src.title}
                         </div>
                         <div style={{
-                          fontFamily: "var(--mono)", fontSize: "9.5px",
-                          color: "var(--text-2)",
-                          overflow: "hidden", textOverflow: "ellipsis",
-                          whiteSpace: "nowrap" as const, maxWidth: 480,
+                          fontFamily: "var(--mono)", fontSize: "9.5px", color: "var(--text-2)",
+                          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                          maxWidth: 480,
                         }}>
                           {src.url}
                         </div>
@@ -214,8 +222,9 @@ export function ArticleView({ article }: { article: FullArticle }) {
               </div>
             </div>
 
-            {/* Sidebar */}
-            <aside style={{ position: "sticky", top: 80 }}>
+            {/* Right: Sidebar */}
+            <aside className="av-sidebar">
+
               {/* Key stats */}
               <div style={{
                 background: "var(--bg-card)", border: "1px solid var(--border)",
@@ -224,13 +233,13 @@ export function ArticleView({ article }: { article: FullArticle }) {
                 <div style={{
                   padding: "14px 18px",
                   background: article.categoryBg,
-                  borderBottom: `1px solid ${article.categoryBorder}`,
+                  borderBottom: "1px solid " + article.categoryBorder,
                   fontFamily: "var(--mono)", fontSize: "9px", fontWeight: 600,
                   letterSpacing: "0.16em", color: article.categoryColor,
                 }}>
                   KEY STATISTICS
                 </div>
-                <div style={{ padding: "4px 0" }}>
+                <div>
                   {article.keyStats.map((stat, i) => (
                     <div key={i} style={{
                       padding: "14px 18px",
@@ -265,8 +274,8 @@ export function ArticleView({ article }: { article: FullArticle }) {
                 }}>
                   SUPPLY CHAIN TIERS COVERED
                 </div>
-                <div style={{ padding: "16px 18px", display: "flex", flexWrap: "wrap" as const, gap: 8 }}>
-                  {["T1","T2","T3","T4","T5","T6","T7"].map(t => {
+                <div style={{ padding: "16px 18px", display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {["T1","T2","T3","T4","T5","T6","T7"].map((t) => {
                     const active = article.tiers.includes(t)
                     return (
                       <span key={t} style={{
@@ -274,7 +283,9 @@ export function ArticleView({ article }: { article: FullArticle }) {
                         padding: "6px 12px", borderRadius: 4,
                         background: active ? article.categoryBg : "transparent",
                         color: active ? article.categoryColor : "var(--text-2)",
-                        border: active ? `1px solid ${article.categoryBorder}` : "1px solid var(--border)",
+                        border: active
+                          ? "1px solid " + article.categoryBorder
+                          : "1px solid var(--border)",
                       }}>
                         {t}
                       </span>
@@ -290,8 +301,7 @@ export function ArticleView({ article }: { article: FullArticle }) {
                 border: "1px solid var(--border-yellow)",
                 borderRadius: "var(--r)",
                 fontFamily: "var(--mono)", fontSize: "10.5px", fontWeight: 600,
-                letterSpacing: "0.08em", color: "var(--yellow)",
-                textDecoration: "none",
+                letterSpacing: "0.08em", color: "var(--yellow)", textDecoration: "none",
               }}>
                 ← BACK TO ALL ANALYSIS
               </Link>
@@ -299,11 +309,10 @@ export function ArticleView({ article }: { article: FullArticle }) {
           </div>
         </section>
 
-        {/* ── MORE ARTICLES ──────────────────────────────────────────── */}
+        {/* MORE ARTICLES */}
         {others.length > 0 && (
           <section style={{
-            padding: "56px 0",
-            background: "var(--bg-0)",
+            padding: "56px 0", background: "var(--bg-0)",
             borderTop: "1px solid var(--border)",
           }}>
             <div className="wrap">
@@ -317,24 +326,37 @@ export function ArticleView({ article }: { article: FullArticle }) {
                   ALL ARTICLES →
                 </Link>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16 }}>
-                {others.map(a => (
-                  <Link key={a.slug} href={`/analysis/${a.slug}`}
-                    className="more-article-card"
+              <div className="av-more-grid">
+                {others.map((a) => (
+                  <Link
+                    key={a.slug}
+                    href={"/analysis/" + a.slug}
                     style={{
-                      display: "flex", flexDirection: "column" as const,
+                      display: "flex", flexDirection: "column",
                       background: "var(--bg-card)", border: "1px solid var(--border)",
                       borderRadius: "var(--rl)", padding: "20px",
                       textDecoration: "none", color: "inherit",
                       transition: "border-color .15s, transform .15s, background .15s",
+                    }}
+                    onMouseEnter={(e: MouseEvent<HTMLAnchorElement>) => {
+                      const el = e.currentTarget
+                      el.style.borderColor = a.categoryColor
+                      el.style.transform = "translateY(-2px)"
+                      el.style.background = "var(--bg-card-h)"
+                    }}
+                    onMouseLeave={(e: MouseEvent<HTMLAnchorElement>) => {
+                      const el = e.currentTarget
+                      el.style.borderColor = "var(--border)"
+                      el.style.transform = "translateY(0)"
+                      el.style.background = "var(--bg-card)"
                     }}
                   >
                     <span style={{
                       fontFamily: "var(--mono)", fontSize: "8.5px", fontWeight: 600,
                       letterSpacing: "0.1em", padding: "2px 7px", borderRadius: 2,
                       background: a.categoryBg, color: a.categoryColor,
-                      border: `1px solid ${a.categoryBorder}`,
-                      marginBottom: 12, alignSelf: "flex-start" as const,
+                      border: "1px solid " + a.categoryBorder,
+                      marginBottom: 12, alignSelf: "flex-start",
                     }}>
                       {a.badge}
                     </span>
@@ -346,7 +368,7 @@ export function ArticleView({ article }: { article: FullArticle }) {
                     </div>
                     <div style={{
                       fontFamily: "var(--mono)", fontSize: "9.5px", color: "var(--text-2)",
-                      display: "flex", justifyContent: "space-between" as const,
+                      display: "flex", justifyContent: "space-between",
                       paddingTop: 12, borderTop: "1px solid var(--border)",
                     }}>
                       <span>{a.date}</span>
@@ -359,7 +381,7 @@ export function ArticleView({ article }: { article: FullArticle }) {
           </section>
         )}
 
-        {/* ── DISCLAIMER ─────────────────────────────────────────────── */}
+        {/* DISCLAIMER */}
         <section style={{ padding: "24px 0", background: "var(--bg-0)", borderTop: "1px solid var(--border)" }}>
           <div className="wrap">
             <p style={{
@@ -373,29 +395,6 @@ export function ArticleView({ article }: { article: FullArticle }) {
 
       </main>
       <SiteFooter />
-
-      <style>{`
-        .source-link:hover {
-          border-color: ${article.categoryColor} !important;
-          background: var(--bg-card-h) !important;
-        }
-        .more-article-card:hover {
-          border-color: var(--border-yellow);
-          transform: translateY(-2px);
-          background: var(--bg-card-h) !important;
-        }
-        @media (max-width: 860px) {
-          .wrap > div[style*="grid-template-columns: 1fr 280px"] {
-            grid-template-columns: 1fr !important;
-          }
-          aside { display: none; }
-        }
-        @media (max-width: 600px) {
-          .wrap > div[style*="repeat(3,1fr)"] {
-            grid-template-columns: 1fr !important;
-          }
-        }
-      `}</style>
     </>
   )
 }
