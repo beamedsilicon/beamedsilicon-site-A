@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     template: "%s | Beamed Silicon",
   },
   description:
-    "The definitive semiconductor intelligence platform. 350 companies, 7 supply chain tiers — from quartz mines to AI accelerators. Real-time stock prices, supply chain risk analysis, and weekl[...]
+    "The definitive semiconductor intelligence platform. 350 companies, 7 supply chain tiers — from quartz mines to AI accelerators. Real-time stock prices, supply chain risk analysis, and weekly industry deep dives.",
   keywords: [
     "semiconductor supply chain", "chip supply chain", "TSMC", "ASML", "Nvidia",
     "HBM memory", "semiconductor stocks", "semiconductor news", "CoWoS packaging",
@@ -62,7 +62,13 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
-    googleBot: { index: true, follow: true, "max-video-preview": -1, "max-image-preview": "large", "max-snippet": -1 },
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
   alternates: {
     canonical: "https://beamedsilicon.qzz.io",
@@ -75,8 +81,7 @@ export const viewport: Viewport = {
   initialScale: 1,
 }
 
-// JSON-LD structured data — tells Google exactly what this site is
-// WebSite schema — directly controls the site name Google shows in search results
+// JSON-LD structured data
 const websiteLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
@@ -112,7 +117,10 @@ const jsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${plexSans.variable} ${plexMono.variable} ${sourceSerif.variable}`}>
+    <html
+      lang="en"
+      className={`${plexSans.variable} ${plexMono.variable} ${sourceSerif.variable}`}
+    >
       <head>
         <script
           type="application/ld+json"
